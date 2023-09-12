@@ -39,21 +39,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
 var cors = require('cors');
 var axios_1 = require("axios");
-var API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4";
+var API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4&limit=10";
 var app = express();
-app.use(cors('*'));
+// Enable CORS for all origins
+app.use(cors());
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 app.get('/flights', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var response;
+    var response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, axios_1.default.get(API_URL)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, axios_1.default.get(API_URL)];
             case 1:
                 response = _a.sent();
+                res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
                 res.send(response.data);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _a.sent();
+                console.error(error_1);
+                res.status(500).send('Internal Server Error');
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });
