@@ -6,8 +6,12 @@ const API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9c
 const app = express();
 
 // Enable CORS for all origins
-app.use(cors());
-
+app.use((res: any, next: any) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    next();
+})
 app.get('/', (req: any, res: any) => {
     res.send('Hello World!');
 });
