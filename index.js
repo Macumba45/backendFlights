@@ -39,16 +39,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
 var cors = require('cors');
 var axios_1 = require("axios");
-var API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4&limit=50";
+var API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4&limit=20";
 var app = express();
-var corsOptions = {
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-    optionsSuccessStatus: 204,
-};
 // Enable CORS for all origins
-app.use(cors(corsOptions));
+app.use(cors());
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
@@ -73,7 +67,6 @@ app.get('/flights', function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-var PORT = process.env.PORT || 3000;
-app.listen(PORT, function () {
-    console.log("Servidor escuchando en el puerto ".concat(PORT));
+app.listen(3005, function () {
+    console.log('Example app listening on port 3005!');
 });
