@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,27 +34,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+var _this = this;
 var express = require('express');
 var cors = require('cors');
-var axios_1 = require("axios");
+var axios = require('axios');
+var http = require('http'); // Necesitamos el módulo http de Node.js
+var webSock = require('ws'); // Importa la librería ws
 var API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4&limit=50";
 var app = express();
-// Enable CORS for all origins
 app.use(cors());
+// Crea un servidor HTTP utilizando Express
+var server = http.createServer(app);
+// Crea un servidor WebSocket vinculado al servidor HTTP
+var wss = new webSock.Server({ server: server });
+wss.on('connection', function (ws) {
+    console.log('Cliente conectado al WebSocket');
+    // Maneja mensajes entrantes desde el cliente WebSocket
+    ws.on('message', function (message) {
+        console.log("Mensaje recibido desde el cliente: ".concat(message));
+    });
+    // Envía un mensaje de bienvenida al cliente
+    ws.send('¡Bienvenido al servidor WebSocket!');
+});
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
-app.get('/flights', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get('/flights', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, axios_1.default.get(API_URL)];
+                return [4 /*yield*/, axios.get(API_URL)];
             case 1:
                 response = _a.sent();
-                res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
+                res.header('Access-Control-Allow-Origin', '*');
                 res.send(response.data);
                 return [3 /*break*/, 3];
             case 2:
@@ -67,6 +80,6 @@ app.get('/flights', function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-app.listen(3005, function () {
-    console.log('Example app listening on port 3005!');
+server.listen(3005, function () {
+    console.log('Servidor Express y WebSocket escuchando en el puerto 3005');
 });
