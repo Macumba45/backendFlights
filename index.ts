@@ -5,8 +5,10 @@ const API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9c
 
 
 const app = express();
-app.use(cors());
-app.get('/', (req: any, res: any) => {
+app.use(cors({
+    //origin: 'https:website.com'
+    origin: '*'
+})); app.get('/', (req: any, res: any) => {
     res.send('Hello World!');
 });
 
