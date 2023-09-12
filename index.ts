@@ -1,9 +1,11 @@
 const express = require('express');
+const cors = require('cors');
 import axios from 'axios';
 const API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4"
 
 
 const app = express();
+app.use(cors());
 app.get('/', (req: any, res: any) => {
     res.send('Hello World!');
 });
