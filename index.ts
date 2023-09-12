@@ -4,8 +4,15 @@ import axios from 'axios';
 const API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4&limit=50"
 
 const app = express();
+
+const corsOptions = {
+    origin: 'http://localhost:3000', // Cambia esto al dominio correcto de tu aplicación
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+    optionsSuccessStatus: 204,
+};
 // Enable CORS for all origins
-app.use(cors());
+app.use(cors(corsOptions));
 
 app.get('/', (req: any, res: any) => {
     res.send('Hello World!');
@@ -22,6 +29,7 @@ app.get('/flights', async (req: any, res: any) => {
     }
 });
 
-app.listen(3005, () => {
-    console.log('Example app listening on port 3005!');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
