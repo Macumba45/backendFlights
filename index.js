@@ -37,9 +37,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require('express');
+var cors = require('cors');
 var axios_1 = require("axios");
 var API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4";
 var app = express();
+app.use(cors({
+    //origin: 'https:website.com'
+    origin: '*'
+}));
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
