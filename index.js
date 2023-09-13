@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,28 +34,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+var _this = this;
 var express = require('express');
+var http = require('http');
+var WebSocketServer = require('ws');
 var cors = require('cors');
-var axios_1 = require("axios");
-var API_URL = "http://api.aviationstack.com/v1/flights?access_key=797372319f9cb0d9c22f18f276e23ac4&limit=20";
+var axios = require('axios');
 var app = express();
-// Enable CORS for all origins
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+var server = http.createServer(app);
+var PORT = 3000;
+var API_URL = "https://rest.coinapi.io/v1/trades/latest?apikey=5D8556DC-E7F3-4BAF-9219-CF21919F80AE";
+app.use(cors());
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
-app.get('/flights', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+app.get('/trades', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
     var response, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, axios_1.default.get(API_URL)];
+                return [4 /*yield*/, axios.get(API_URL)];
             case 1:
                 response = _a.sent();
                 res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
@@ -71,6 +69,40 @@ app.get('/flights', function (req, res) { return __awaiter(void 0, void 0, void 
         }
     });
 }); });
-app.listen(3005, function () {
-    console.log('Example app listening on port 3005!');
+// // Crear un servidor WebSocket
+// const wss = new WebSocketServer.Server({ server });
+// // Conectar al WebSocket de CoinAPI
+// const coinApiWebSocket = new WebSocketServer('ws://ws.coinapi.io/v1/');
+// // Manejar conexiones WebSocket
+// wss.on('connection', (ws) => {
+//     console.log('Cliente conectado');
+//     // Escuchar mensajes del cliente
+//     ws.on('message', (message) => {
+//         console.log(`Mensaje recibido: ${message}`);
+//         // Puedes hacer lo que quieras con el mensaje aquí y luego enviar una respuesta si es necesario.
+//     });
+//     // Manejar desconexiones
+//     ws.on('close', () => {
+//         console.log('Cliente desconectado');
+//     });
+// });
+// // Escuchar mensajes del WebSocket de CoinAPI
+// coinApiWebSocket.on('open', () => {
+//     console.log('Conectado al WebSocket de CoinAPI');
+//     // Suscribirte a un canal o enviar comandos según la documentación de CoinAPI
+//     const subscribeCommand = {
+//         type: 'hello',
+//         apiKey: '5D8556DC-E7F3-4BAF-9219-CF21919F80AE', // Reemplaza con tu API Key de CoinAPI
+//         subscribe_data_type: ['trade'],
+//     };
+//     console.log(subscribeCommand)
+//     coinApiWebSocket.send(JSON.stringify(subscribeCommand));
+// });
+// coinApiWebSocket.on('message', (message) => {
+//     // Aquí recibirás datos en tiempo real desde CoinAPI
+//     console.log(`Datos en tiempo real recibidos: ${message}`);
+// });
+// Iniciar el servidor HTTP
+server.listen(PORT, function () {
+    console.log("Server is listening on port ".concat(PORT));
 });
