@@ -24,6 +24,7 @@ const client2 = Binance({
 
 app.get('/monedas', async (req, res) => {
     try {
+
         // Realizar una llamada a la API de Binance para obtener información de todas las monedas y sus valores
         const tickerPrices = await client.prices();
 
@@ -66,6 +67,7 @@ app.get('/monedas', async (req, res) => {
 
         res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
         res.send(coinData);
+        console.log(coinData)
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
@@ -80,9 +82,56 @@ app.get('/', (req, res) => {
 
 app.get('/trades', async (req, res) => {
     try {
-        const response = await axios.get(API_URL);
-        res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
-        res.send(response.data);
+        try {
+
+            // Realizar una llamada a la API de Binance para obtener información de todas las monedas y sus valores
+            const tickerPrices = await client.prices();
+
+            // Realizar una llamada a la API de Binance para obtener información de la variación de las monedas en las últimas 24 horas
+            const priceChanges = await client.dailyStats();
+
+            // Obtener la lista de monedas disponibles en Binance
+            const availableCoins = Object.keys(tickerPrices);
+
+            // Crear un objeto para almacenar los datos finales
+            const coinData = {};
+
+            // Limitar el número de monedas a 50
+            const maxCoins = 50;
+            let coinsCount = 0;
+
+            // Recorrer las monedas disponibles
+            for (const symbol of availableCoins) {
+                if (coinsCount >= maxCoins) {
+                    break; // Salir del bucle si ya tenemos 50 monedas
+                }
+
+                const price = parseFloat(tickerPrices[symbol]);
+                const change = priceChanges.find((data) => data.symbol === symbol);
+                if (change) {
+                    const volume24h = parseFloat(change.volume);
+                    const marketCap = price * volume24h;
+
+                    coinData[symbol] = {
+                        name: symbol, // Aquí puedes obtener el nombre de la moneda de otra fuente si es necesario
+                        price: price.toFixed(4),
+                        changePercent: (((price - parseFloat(change.lastPrice)) / parseFloat(change.lastPrice)) * 100).toFixed(2),
+                        volume24h: volume24h.toFixed(4),
+                        marketCap: marketCap.toFixed(4),
+                    };
+
+                    coinsCount++;
+                }
+            }
+
+            res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
+            res.send(coinData);
+            console.log(coinData)
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Internal Server Error');
+        }
+
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
