@@ -164,6 +164,6 @@ app.get('/trades', function (req, res) { return __awaiter(_this, void 0, void 0,
 //     console.log(`Datos en tiempo real recibidos: ${message}`);
 // });
 // Iniciar el servidor HTTP
-server.listen(PORT, function () {
+app.listen(PORT, function () {
     console.log("Server is listening on port ".concat(PORT));
 });
