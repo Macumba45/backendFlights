@@ -65,7 +65,7 @@ app.get('/monedas', async (req, res) => {
         }
 
         res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
-        res.json(coinData);
+        res.send(coinData);
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');

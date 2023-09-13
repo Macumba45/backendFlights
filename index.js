@@ -95,7 +95,7 @@ app.get('/monedas', function (req, res) { return __awaiter(_this, void 0, void 0
                         break;
                 }
                 res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
-                res.json(coinData);
+                res.send(coinData);
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
