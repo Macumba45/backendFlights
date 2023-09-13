@@ -111,66 +111,23 @@ app.get('/', function (req, res) {
     res.send('Hello World!');
 });
 app.get('/trades', function (req, res) { return __awaiter(_this, void 0, void 0, function () {
-    var tickerPrices, priceChanges, availableCoins, coinData, maxCoins, coinsCount, _loop_2, _i, availableCoins_2, symbol, state_2, error_2, error_3;
+    var response, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 6, , 7]);
-                _a.label = 1;
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, axios.get(API_URL)];
             case 1:
-                _a.trys.push([1, 4, , 5]);
-                return [4 /*yield*/, client.prices()];
-            case 2:
-                tickerPrices = _a.sent();
-                return [4 /*yield*/, client.dailyStats()];
-            case 3:
-                priceChanges = _a.sent();
-                availableCoins = Object.keys(tickerPrices);
-                coinData = {};
-                maxCoins = 50;
-                coinsCount = 0;
-                _loop_2 = function (symbol) {
-                    if (coinsCount >= maxCoins) {
-                        return "break";
-                    }
-                    var price = parseFloat(tickerPrices[symbol]);
-                    var change = priceChanges.find(function (data) { return data.symbol === symbol; });
-                    if (change) {
-                        var volume24h = parseFloat(change.volume);
-                        var marketCap = price * volume24h;
-                        coinData[symbol] = {
-                            name: symbol,
-                            price: price.toFixed(4),
-                            changePercent: (((price - parseFloat(change.lastPrice)) / parseFloat(change.lastPrice)) * 100).toFixed(2),
-                            volume24h: volume24h.toFixed(4),
-                            marketCap: marketCap.toFixed(4),
-                        };
-                        coinsCount++;
-                    }
-                };
-                // Recorrer las monedas disponibles
-                for (_i = 0, availableCoins_2 = availableCoins; _i < availableCoins_2.length; _i++) {
-                    symbol = availableCoins_2[_i];
-                    state_2 = _loop_2(symbol);
-                    if (state_2 === "break")
-                        break;
-                }
+                response = _a.sent();
                 res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
-                res.send(coinData);
-                console.log(coinData);
-                return [3 /*break*/, 5];
-            case 4:
+                res.send(response.data);
+                return [3 /*break*/, 3];
+            case 2:
                 error_2 = _a.sent();
                 console.error(error_2);
                 res.status(500).send('Internal Server Error');
-                return [3 /*break*/, 5];
-            case 5: return [3 /*break*/, 7];
-            case 6:
-                error_3 = _a.sent();
-                console.error(error_3);
-                res.status(500).send('Internal Server Error');
-                return [3 /*break*/, 7];
-            case 7: return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); });
