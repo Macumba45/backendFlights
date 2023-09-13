@@ -43,7 +43,7 @@ var axios = require('axios');
 var app = express();
 var server = http.createServer(app);
 var PORT = 3000;
-var API_URL = "https://rest.coinapi.io/v1/trades/latest?apikey=5D8556DC-E7F3-4BAF-9219-CF21919F80AE";
+var API_URL = "https://rest.coinapi.io/v1/trades/latest?apikey=25A2039B-3FBC-401F-8C9A-8796204BA4E0";
 app.use(cors());
 app.get('/', function (req, res) {
     res.send('Hello World!');
