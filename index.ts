@@ -3,6 +3,8 @@ const http = require('http');
 const WebSocketServer = require('ws');
 const cors = require('cors');
 const axios = require('axios');
+const Binance = require('binance-api-node').default
+
 
 const app = express();
 const server = http.createServer(app);
@@ -10,6 +12,67 @@ const PORT = 3000;
 const API_URL = "https://rest.coinapi.io/v1/trades/latest?apikey=25A2039B-3FBC-401F-8C9A-8796204BA4E0"
 
 app.use(cors());
+
+const client = Binance()
+
+// Authenticated client, can make signed calls
+const client2 = Binance({
+    apiKey: 'WJqBfo6mkFWBdiHAuFDBFJ06lGbUWh9DWFLRpyiwimuP8SeVmB7KX0W1awWNPSPp',
+    apiSecret: 'u3L1Fpr3uZnBmmGFg3axSBGuQJKRprT5GO0bQgud7u0tPO0gihUgahvNY6Jdd4Mq',
+})
+
+
+app.get('/monedas', async (req, res) => {
+    try {
+        // Realizar una llamada a la API de Binance para obtener información de todas las monedas y sus valores
+        const tickerPrices = await client.prices();
+
+        // Realizar una llamada a la API de Binance para obtener información de la variación de las monedas en las últimas 24 horas
+        const priceChanges = await client.dailyStats();
+
+        // Obtener la lista de monedas disponibles en Binance
+        const availableCoins = Object.keys(tickerPrices);
+
+        // Crear un objeto para almacenar los datos finales
+        const coinData = {};
+
+        // Limitar el número de monedas a 50
+        const maxCoins = 50;
+        let coinsCount = 0;
+
+        // Recorrer las monedas disponibles
+        for (const symbol of availableCoins) {
+            if (coinsCount >= maxCoins) {
+                break; // Salir del bucle si ya tenemos 50 monedas
+            }
+
+            const price = parseFloat(tickerPrices[symbol]);
+            const change = priceChanges.find((data) => data.symbol === symbol);
+            if (change) {
+                const volume24h = parseFloat(change.volume);
+                const marketCap = price * volume24h;
+
+                coinData[symbol] = {
+                    name: symbol, // Aquí puedes obtener el nombre de la moneda de otra fuente si es necesario
+                    price: price.toFixed(4),
+                    changePercent: (((price - parseFloat(change.lastPrice)) / parseFloat(change.lastPrice)) * 100).toFixed(2),
+                    volume24h: volume24h.toFixed(4),
+                    marketCap: marketCap.toFixed(4),
+                };
+
+                coinsCount++;
+            }
+        }
+
+        res.header('Access-Control-Allow-Origin', '*'); // Set the CORS header
+        res.json(coinData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
